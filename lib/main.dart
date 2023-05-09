@@ -41,56 +41,85 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
+      body: BlocListener<CounterCubitCubit, CounterState>(
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state.wasIncreamented == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'counter has be increamented to ${state.counterValue}'),
+                duration: Duration(seconds: 1),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    // Perform undo logic here
+                  },
+                ),
               ),
-              BlocBuilder<CounterCubitCubit, CounterState>(
-                  builder: (context, state) {
-                if (state.counterValue > 5) {
-                  return Text(
-                    'you havee excede the number of trials ${state.counterValue}',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  );
-                }
-                if (state.counterValue < 5 && state.counterValue == 4) {
-                  return Text(
-                    'you have on more trial',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  );
-                }
+            );
+          } else if (state.wasIncreamented == false) {
+            Scaffold.of(context).showBottomSheet((context) => Container(
+                height: 70,
+                color: Colors.amberAccent,
+                child: Center(
+                  child: Text(
+                      'counter has be decremented to ${state.counterValue}'),
+                )));
+          }
+        },
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'You have pushed the button this many times:',
+                ),
+                BlocBuilder<CounterCubitCubit, CounterState>(
+                    builder: (context, state) {
+                  if (state.counterValue > 5) {
+                    return Text(
+                      'you havee exceded the number of trials ${state.counterValue}',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    );
+                  }
+                  if (state.counterValue < 5 && state.counterValue == 4) {
+                    return Text(
+                      'you have one more trial',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    );
+                  }
 
-                return Text(
-                  '${state.counterValue}',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                );
-              }),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FloatingActionButton(
-                    hoverColor: Colors.orange,
-                    onPressed: () {
-                      BlocProvider.of<CounterCubitCubit>(context).dencrement();
-                    },
-                    tooltip: 'Increment',
-                    child: const Icon(Icons.remove),
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      BlocProvider.of<CounterCubitCubit>(context).increment();
-                    },
-                    tooltip: 'Increment',
-                    child: const Icon(Icons.add),
-                  )
-                ],
-              )
-            ],
+                  return Text(
+                    '${state.counterValue}',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  );
+                }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FloatingActionButton(
+                      hoverColor: Colors.orange,
+                      onPressed: () {
+                        BlocProvider.of<CounterCubitCubit>(context)
+                            .dencrement();
+                      },
+                      tooltip: 'Increment',
+                      child: const Icon(Icons.remove),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        BlocProvider.of<CounterCubitCubit>(context).increment();
+                      },
+                      tooltip: 'Increment',
+                      child: const Icon(Icons.add),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
